@@ -84,6 +84,8 @@ public class MemeReviewScript : MonoBehaviour {
             {
                 moduleSolved = true;
                 backRenderer.material = backgroundMats[2];
+                if (strikeRoutine != null)
+                    StopCoroutine(strikeRoutine);
                 GetComponent<KMBombModule>().HandlePass();
                 if (error)
                     Debug.LogFormat("[Meme Review #{0}] Review button pressed. Module solved!", moduleId);
