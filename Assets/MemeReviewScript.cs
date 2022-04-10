@@ -124,13 +124,31 @@ public class MemeReviewScript : MonoBehaviour {
                         yield return request.SendWebRequest();
                         if (!request.isNetworkError && !request.isHttpError)
                         {
-                            Material mat = new Material(materialMaster);
-                            mat.mainTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-                            memeRenderer.material = mat;
-                            regenText.SetActive(false);
-                            loading = false;
-                            Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"New\".", moduleId);
-                            yield break;
+                            WWW www2 = new WWW("https://imgflip.com/m/ai_memes?sort=hot");
+                            while (!www2.isDone) { yield return null; if (www2.error != null) break; };
+                            if (www2.error == null)
+                            {
+                                List<int> indexes2 = AllIndexesOf(www2.text, "<img class='base-img' src='");
+                                if (indexes2.Count != 0)
+                                {
+                                    for (int i = 0; i < indexes2.Count; i++)
+                                    {
+                                        string imageLink2 = GetLinkFromIndex(indexes2[i], www2);
+                                        if (imageLink.Equals(imageLink2))
+                                        {
+                                            ct--;
+                                            goto retry;
+                                        }
+                                    }
+                                    Material mat = new Material(materialMaster);
+                                    mat.mainTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                                    memeRenderer.material = mat;
+                                    regenText.SetActive(false);
+                                    loading = false;
+                                    Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"New\".", moduleId);
+                                    yield break;
+                                }
+                            }
                         }
                     }
                 }
@@ -184,14 +202,29 @@ public class MemeReviewScript : MonoBehaviour {
                         yield return request.SendWebRequest();
                         if (!request.isNetworkError && !request.isHttpError)
                         {
-                            yield return new WaitForSeconds(UnityEngine.Random.Range(0f, 3f));
-                            Material mat = new Material(materialMaster);
-                            mat.mainTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
-                            memeRenderer.material = mat;
-                            regenText.SetActive(false);
-                            loading = false;
-                            Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"Hot\".", moduleId);
-                            yield break;
+                            WWW www2 = new WWW("https://imgflip.com/m/ai_memes");
+                            while (!www2.isDone) { yield return null; if (www2.error != null) break; };
+                            if (www2.error == null)
+                            {
+                                List<int> indexes2 = AllIndexesOf(www2.text, "<img class='base-img' src='");
+                                if (indexes2.Count != 0)
+                                {
+                                    for (int i = 0; i < indexes2.Count; i++)
+                                    {
+                                        string imageLink2 = GetLinkFromIndex(indexes2[i], www2);
+                                        if (imageLink.Equals(imageLink2))
+                                            goto redo;
+                                    }
+                                    yield return new WaitForSeconds(UnityEngine.Random.Range(0f, 3f));
+                                    Material mat = new Material(materialMaster);
+                                    mat.mainTexture = ((DownloadHandlerTexture)request.downloadHandler).texture;
+                                    memeRenderer.material = mat;
+                                    regenText.SetActive(false);
+                                    loading = false;
+                                    Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"Hot\".", moduleId);
+                                    yield break;
+                                }
+                            }
                         }
                     }
                     else
