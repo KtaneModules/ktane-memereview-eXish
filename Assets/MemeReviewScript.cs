@@ -40,11 +40,18 @@ public class MemeReviewScript : MonoBehaviour {
 
     void Start () {
         statusLight.SetActive(false);
-        StartCoroutine(GetMeme());
+        StartCoroutine(GetMeme(true));
     }
 
     void PressButton(KMSelectable pressed)
     {
+        if (moduleSolved != false && loading != true && Array.IndexOf(buttons, pressed) == 0 && !error)
+        {
+            regenText.SetActive(true);
+            memeRenderer.material = materialMaster;
+            StartCoroutine(GetMeme(false));
+            return;
+        }
         if (moduleSolved != true && loading != true)
         {
             pressed.AddInteractionPunch(0.5f);
@@ -63,7 +70,7 @@ public class MemeReviewScript : MonoBehaviour {
                 regenText.SetActive(true);
                 memeRenderer.material = materialMaster;
                 Debug.LogFormat("[Meme Review #{0}] Regenerating meme...", moduleId);
-                StartCoroutine(GetMeme());
+                StartCoroutine(GetMeme(true));
             }
             else if (Array.IndexOf(buttons, pressed) == 0 && shouldReview)
             {
@@ -94,7 +101,7 @@ public class MemeReviewScript : MonoBehaviour {
         }
     }
 
-    IEnumerator GetMeme()
+    IEnumerator GetMeme(bool log)
     {
         loading = true;
         int memeExtension = UnityEngine.Random.Range(0, 2);
@@ -145,7 +152,8 @@ public class MemeReviewScript : MonoBehaviour {
                                     memeRenderer.material = mat;
                                     regenText.SetActive(false);
                                     loading = false;
-                                    Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"New\".", moduleId);
+                                    if (log)
+                                        Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"New\".", moduleId);
                                     yield break;
                                 }
                             }
@@ -175,7 +183,8 @@ public class MemeReviewScript : MonoBehaviour {
                             memeRenderer.material = mat;
                             regenText.SetActive(false);
                             loading = false;
-                            Debug.LogFormat("[Meme Review #{0}] Current meme is on the front page and was received sorting by \"New\".", moduleId);
+                            if (log)
+                                Debug.LogFormat("[Meme Review #{0}] Current meme is on the front page and was received sorting by \"New\".", moduleId);
                             yield break;
                         }
                     }
@@ -221,7 +230,8 @@ public class MemeReviewScript : MonoBehaviour {
                                     memeRenderer.material = mat;
                                     regenText.SetActive(false);
                                     loading = false;
-                                    Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"Hot\".", moduleId);
+                                    if (log)
+                                        Debug.LogFormat("[Meme Review #{0}] Current meme is not on the front page and was received sorting by \"Hot\".", moduleId);
                                     yield break;
                                 }
                             }
@@ -257,7 +267,8 @@ public class MemeReviewScript : MonoBehaviour {
                             memeRenderer.material = mat;
                             regenText.SetActive(false);
                             loading = false;
-                            Debug.LogFormat("[Meme Review #{0}] Current meme is on the front page and was received sorting by \"Hot\".", moduleId);
+                            if (log)
+                                Debug.LogFormat("[Meme Review #{0}] Current meme is on the front page and was received sorting by \"Hot\".", moduleId);
                             yield break;
                         }
                     }
@@ -266,7 +277,8 @@ public class MemeReviewScript : MonoBehaviour {
         }
         error = true;
         regenText.GetComponent<TextMesh>().text = "Error";
-        Debug.LogFormat("[Meme Review #{0}] The module failed to fetch memes, press the review button to solve the module.", moduleId);
+        if (log)
+            Debug.LogFormat("[Meme Review #{0}] The module failed to fetch memes, press the review button to solve the module.", moduleId);
         loading = false;
     }
 
