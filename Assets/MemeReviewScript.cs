@@ -47,6 +47,8 @@ public class MemeReviewScript : MonoBehaviour {
     {
         if (moduleSolved != false && loading != true && Array.IndexOf(buttons, pressed) == 0 && !error)
         {
+            pressed.AddInteractionPunch(0.5f);
+            audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonPress, pressed.transform);
             regenText.SetActive(true);
             memeRenderer.material = materialMaster;
             StartCoroutine(GetMeme(false));
