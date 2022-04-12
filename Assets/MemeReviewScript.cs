@@ -114,7 +114,7 @@ public class MemeReviewScript : MonoBehaviour {
             if (UnityEngine.Random.Range(0, 5) != 0)
             {
                 shouldReview = false;
-                int timesToGo = UnityEngine.Random.Range(1, 21);
+                int timesToGo = UnityEngine.Random.Range(2, 21);
                 int ct = 0;
                 WWW www = new WWW("https://imgflip.com/m/ai_memes");
                 retry:
