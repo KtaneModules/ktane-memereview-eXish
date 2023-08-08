@@ -340,7 +340,7 @@ public class MemeReviewScript : MonoBehaviour {
         {
             if (loading)
                 yield return true;
-            else if (!shouldReview)
+            else if (!shouldReview && !error)
                 buttons[0].OnInteract();
             else
                 buttons[1].OnInteract();
