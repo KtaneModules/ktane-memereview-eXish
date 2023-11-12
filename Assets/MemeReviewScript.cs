@@ -145,6 +145,7 @@ public class MemeReviewScript : MonoBehaviour {
                                     for (int i = 0; i < indexes2.Count; i++)
                                     {
                                         string imageLink2 = GetLinkFromIndex(indexes2[i], www2);
+                                        Debug.Log(imageLink + " " + imageLink2);
                                         if (imageLink.Equals(imageLink2))
                                         {
                                             ct--;
@@ -225,6 +226,7 @@ public class MemeReviewScript : MonoBehaviour {
                                     for (int i = 0; i < indexes2.Count; i++)
                                     {
                                         string imageLink2 = GetLinkFromIndex(indexes2[i], www2);
+                                        Debug.Log(imageLink + " " + imageLink2);
                                         if (imageLink.Equals(imageLink2))
                                             goto redo;
                                     }
